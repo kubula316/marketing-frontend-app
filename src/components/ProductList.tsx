@@ -45,44 +45,43 @@ const ProductList: React.FC<ProductListProps> = ({ sellerId, onSelectProduct }) 
   };
 
   if (isLoading) {
-    return <div className="text-center p-8">Loading products...</div>;
+    return <div className="text-center p-12 text-slate-400">Loading products...</div>;
   }
 
   if (error) {
-    return <div className="text-center p-8 text-red-400">{error}</div>;
+    return <div className="text-center p-12 text-red-400 bg-red-900/20 rounded-lg">{error}</div>;
   }
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-white">Select a Product</h2>
+    <div className="p-6 bg-slate-900/50 rounded-2xl border border-slate-800 shadow-2xl">
+      <div className="flex justify-between items-center mb-8">
+        <h2 className="text-4xl font-bold text-white">Select a Product</h2>
         <button
           onClick={() => setShowCreateForm(!showCreateForm)}
-          className="bg-cyan-500 text-white font-bold px-5 py-2 rounded-lg hover:bg-cyan-600 transition-colors shadow-md"
+          className="group relative inline-flex items-center justify-center px-6 py-3 text-white font-bold overflow-hidden bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg shadow-lg transition-all duration-300 hover:from-cyan-600 hover:to-blue-600 transform hover:scale-105"
         >
-          {showCreateForm ? 'Cancel' : 'Create Product'}
+          <span className="absolute w-0 h-0 transition-all duration-300 ease-out bg-white rounded-full group-hover:w-32 group-hover:h-32 opacity-10"></span>
+          <span className="relative">{showCreateForm ? 'Cancel' : 'Create Product'}</span>
         </button>
       </div>
 
       {showCreateForm && (
-        <form onSubmit={handleCreateProduct} className="mb-8 p-6 bg-gray-700 rounded-lg shadow-lg">
-          <h3 className="text-2xl font-bold mb-4 text-white">Create New Product</h3>
+        <form onSubmit={handleCreateProduct} className="mb-8 p-8 bg-slate-800/60 rounded-xl shadow-inner border border-slate-700 animate-in fade-in duration-500">
+          <h3 className="text-2xl font-bold mb-6 text-white">Create New Product</h3>
           <div>
-            <label htmlFor="productName" className="block text-sm font-medium text-gray-300 mb-1">
-              Product Name
-            </label>
+            <label htmlFor="productName" className="block text-sm font-medium text-slate-300 mb-2">Product Name</label>
             <input
               id="productName"
               type="text"
-              placeholder="Enter product name"
+              placeholder="e.g., Running Shoes"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full p-3 bg-slate-900/70 border-2 border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-cyan-500 transition-colors"
               required
             />
           </div>
-          <button type="submit" className="mt-6 w-full bg-green-500 text-white font-bold px-4 py-3 rounded-lg hover:bg-green-600 transition-colors shadow-md">
-            Create
+          <button type="submit" className="mt-8 w-full bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold px-4 py-3 rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all shadow-md transform hover:scale-105">
+            Create Product
           </button>
         </form>
       )}
@@ -91,10 +90,13 @@ const ProductList: React.FC<ProductListProps> = ({ sellerId, onSelectProduct }) 
         {products.map((product) => (
           <div
             key={product.id}
-            className="p-6 bg-gray-700 rounded-lg cursor-pointer hover:bg-gray-600 transition-transform transform hover:-translate-y-1 shadow-lg"
+            className="group relative p-8 bg-slate-800/50 rounded-xl cursor-pointer hover:bg-slate-800 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-cyan-500/20 border border-slate-800 hover:border-slate-700"
             onClick={() => onSelectProduct(product)}
           >
-            <h3 className="font-bold text-xl text-white">{product.name}</h3>
+            <div className="absolute -inset-px bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-md"></div>
+            <div className="relative flex items-center justify-center h-full">
+              <h3 className="font-bold text-2xl text-white text-center truncate">{product.name}</h3>
+            </div>
           </div>
         ))}
       </div>

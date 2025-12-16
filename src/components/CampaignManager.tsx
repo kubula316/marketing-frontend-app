@@ -30,13 +30,13 @@ const CampaignManager: React.FC<CampaignManagerProps> = ({ productId, onCampaign
   const [status, setStatus] = useState<'ON' | 'OFF'>('ON');
   const [townId, setTownId] = useState<number | undefined>(undefined);
   const [radiusKm, setRadiusKm] = useState(1);
-
+  
   // Data for form
   const [towns, setTowns] = useState<Town[]>([]);
   const [keywordQuery, setKeywordQuery] = useState('');
   const [keywordSuggestions, setKeywordSuggestions] = useState<Keyword[]>([]);
   const [isSearchingKeywords, setIsSearchingKeywords] = useState(false);
-
+  
   const debouncedKeywordQuery = useDebounce(keywordQuery, 300);
 
   const fetchInitialData = async () => {
@@ -102,7 +102,7 @@ const CampaignManager: React.FC<CampaignManagerProps> = ({ productId, onCampaign
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const campaignData = { campaignName, keywords: selectedKeywords, bidAmount, campaignFund, status, townId, radiusKm };
-
+    
     try {
       if (editingCampaign) {
         const updated = await updateCampaign(editingCampaign.id, campaignData);
@@ -139,91 +139,96 @@ const CampaignManager: React.FC<CampaignManagerProps> = ({ productId, onCampaign
     setSelectedKeywords(selectedKeywords.filter(k => k !== keyword));
   };
 
-  if (isLoading) return <div className="text-center p-8">Loading...</div>;
-  if (error) return <div className="text-center p-8 text-red-400">{error}</div>;
+  if (isLoading) return <div className="text-center p-12 text-slate-400">Loading campaigns...</div>;
+  if (error) return <div className="text-center p-12 text-red-400 bg-red-900/20 rounded-lg">{error}</div>;
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-white">Campaigns</h2>
-        <button onClick={handleOpenCreateForm} className="bg-indigo-500 text-white font-bold px-5 py-2 rounded-lg hover:bg-indigo-600">
-          Create Campaign
+    <div className="p-6 bg-slate-900/50 rounded-2xl border border-slate-800 shadow-2xl">
+      <div className="flex justify-between items-center mb-8">
+        <h2 className="text-4xl font-bold text-white">Campaigns</h2>
+        <button onClick={handleOpenCreateForm} className="group relative inline-flex items-center justify-center px-6 py-3 text-white font-bold overflow-hidden bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg shadow-lg transition-all duration-300 hover:from-purple-600 hover:to-pink-600 transform hover:scale-105">
+          <span className="absolute w-0 h-0 transition-all duration-300 ease-out bg-white rounded-full group-hover:w-32 group-hover:h-32 opacity-10"></span>
+          <span className="relative">Create Campaign</span>
         </button>
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="mb-8 p-6 bg-gray-700 rounded-lg">
-          <h3 className="text-2xl font-bold mb-4">{editingCampaign ? 'Edit Campaign' : 'Create New Campaign'}</h3>
+        <form onSubmit={handleSubmit} className="mb-8 p-8 bg-slate-800/60 rounded-xl shadow-inner border border-slate-700 animate-in fade-in duration-500">
+          <h3 className="text-2xl font-bold mb-6">{editingCampaign ? 'Edit Campaign' : 'Create New Campaign'}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Form fields with updated styling */}
             <div>
-              <label htmlFor="campaignName" className="block text-sm font-medium text-gray-300 mb-1">Campaign Name</label>
-              <input id="campaignName" type="text" value={campaignName} onChange={e => setCampaignName(e.target.value)} required className="w-full p-3 bg-gray-800 rounded-lg" />
+              <label htmlFor="campaignName" className="block text-sm font-medium text-slate-300 mb-2">Campaign Name</label>
+              <input id="campaignName" type="text" value={campaignName} onChange={e => setCampaignName(e.target.value)} required className="w-full p-3 bg-slate-900/70 border-2 border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-purple-500 transition-colors" />
             </div>
             <div className="relative">
-              <label htmlFor="keywords" className="block text-sm font-medium text-gray-300 mb-1">Keywords</label>
-              <input id="keywords" type="text" value={keywordQuery} onChange={e => setKeywordQuery(e.target.value)} placeholder="Search and add keywords" className="w-full p-3 bg-gray-800 rounded-lg" />
+              <label htmlFor="keywords" className="block text-sm font-medium text-slate-300 mb-2">Keywords</label>
+              <input id="keywords" type="text" value={keywordQuery} onChange={e => setKeywordQuery(e.target.value)} placeholder="Search and add keywords" className="w-full p-3 bg-slate-900/70 border-2 border-slate-700 rounded-lg" />
               {(keywordSuggestions.length > 0 || isSearchingKeywords) && (
-                <ul className="absolute z-10 w-full bg-gray-800 border rounded-lg mt-1">
-                  {isSearchingKeywords ? <li>Searching...</li> : keywordSuggestions.map(kw => (
-                    <li key={kw.id} onClick={() => addKeyword(kw.value)} className="p-2 cursor-pointer hover:bg-gray-600">{kw.value}</li>
+                <ul className="absolute z-10 w-full bg-slate-800 border border-slate-700 rounded-lg mt-1 shadow-lg max-h-48 overflow-y-auto">
+                  {isSearchingKeywords ? <li className="p-3 text-slate-400">Searching...</li> : keywordSuggestions.map(kw => (
+                    <li key={kw.id} onClick={() => addKeyword(kw.value)} className="p-3 cursor-pointer hover:bg-slate-700">{kw.value}</li>
                   ))}
                 </ul>
               )}
-              <div className="flex flex-wrap gap-2 mt-2">
+              <div className="flex flex-wrap gap-2 mt-3">
                 {selectedKeywords.map(kw => (
-                  <span key={kw} className="bg-indigo-500 text-white px-2 py-1 rounded-full text-sm">{kw} <button type="button" onClick={() => removeKeyword(kw)} className="ml-2">×</button></span>
+                  <span key={kw} className="bg-indigo-500/80 text-indigo-100 text-sm font-medium px-3 py-1 rounded-full flex items-center">{kw} <button type="button" onClick={() => removeKeyword(kw)} className="ml-2 text-indigo-200 hover:text-white">×</button></span>
                 ))}
               </div>
             </div>
             <div>
-              <label htmlFor="bidAmount" className="block text-sm font-medium text-gray-300 mb-1">Bid Amount</label>
-              <input id="bidAmount" type="number" value={bidAmount} onChange={e => setBidAmount(parseFloat(e.target.value))} required min="0.01" step="0.01" className="w-full p-3 bg-gray-800 rounded-lg" />
+              <label htmlFor="bidAmount" className="block text-sm font-medium text-slate-300 mb-2">Bid Amount</label>
+              <input id="bidAmount" type="number" value={bidAmount} onChange={e => setBidAmount(parseFloat(e.target.value))} required min="0.01" step="0.01" className="w-full p-3 bg-slate-900/70 border-2 border-slate-700 rounded-lg" />
             </div>
             <div>
-              <label htmlFor="campaignFund" className="block text-sm font-medium text-gray-300 mb-1">Campaign Fund</label>
-              <input id="campaignFund" type="number" value={campaignFund} onChange={e => setCampaignFund(parseFloat(e.target.value))} required min="0.01" step="0.01" className="w-full p-3 bg-gray-800 rounded-lg" />
+              <label htmlFor="campaignFund" className="block text-sm font-medium text-slate-300 mb-2">Campaign Fund</label>
+              <input id="campaignFund" type="number" value={campaignFund} onChange={e => setCampaignFund(parseFloat(e.target.value))} required min="0.01" step="0.01" className="w-full p-3 bg-slate-900/70 border-2 border-slate-700 rounded-lg" />
             </div>
             <div>
-              <label htmlFor="townId" className="block text-sm font-medium text-gray-300 mb-1">Town</label>
-              <select id="townId" value={townId ?? ''} onChange={e => setTownId(Number(e.target.value))} className="w-full p-3 bg-gray-800 rounded-lg">
+              <label htmlFor="townId" className="block text-sm font-medium text-slate-300 mb-2">Town</label>
+              <select id="townId" value={townId ?? ''} onChange={e => setTownId(Number(e.target.value))} className="w-full p-3 bg-slate-900/70 border-2 border-slate-700 rounded-lg">
                 <option value="">Select a town</option>
                 {towns.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
               </select>
             </div>
             <div>
-              <label htmlFor="radiusKm" className="block text-sm font-medium text-gray-300 mb-1">Radius (km)</label>
-              <input id="radiusKm" type="number" value={radiusKm} onChange={e => setRadiusKm(parseInt(e.target.value))} required min="1" className="w-full p-3 bg-gray-800 rounded-lg" />
+              <label htmlFor="radiusKm" className="block text-sm font-medium text-slate-300 mb-2">Radius (km)</label>
+              <input id="radiusKm" type="number" value={radiusKm} onChange={e => setRadiusKm(parseInt(e.target.value))} required min="1" className="w-full p-3 bg-slate-900/70 border-2 border-slate-700 rounded-lg" />
             </div>
             <div>
-              <label htmlFor="status" className="block text-sm font-medium text-gray-300 mb-1">Status</label>
-              <select id="status" value={status} onChange={e => setStatus(e.target.value as 'ON' | 'OFF')} className="w-full p-3 bg-gray-800 rounded-lg">
+              <label htmlFor="status" className="block text-sm font-medium text-slate-300 mb-2">Status</label>
+              <select id="status" value={status} onChange={e => setStatus(e.target.value as 'ON' | 'OFF')} className="w-full p-3 bg-slate-900/70 border-2 border-slate-700 rounded-lg">
                 <option value="ON">ON</option>
                 <option value="OFF">OFF</option>
               </select>
             </div>
           </div>
-          <div className="flex justify-end gap-4 mt-6">
-            <button type="button" onClick={resetForm} className="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg">Cancel</button>
-            <button type="submit" className="bg-green-500 text-white font-bold py-2 px-4 rounded-lg">{editingCampaign ? 'Update' : 'Create'}</button>
+          <div className="flex justify-end gap-4 mt-8">
+            <button type="button" onClick={resetForm} className="bg-slate-700 text-white font-bold py-2.5 px-6 rounded-lg hover:bg-slate-600 transition-colors">Cancel</button>
+            <button type="submit" className="bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold py-2.5 px-6 rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all">{editingCampaign ? 'Update Campaign' : 'Create Campaign'}</button>
           </div>
         </form>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {campaigns.map(campaign => (
-          <div key={campaign.id} className="p-6 bg-gray-700 rounded-lg shadow-lg relative cursor-pointer" onClick={() => handleOpenEditForm(campaign)}>
-            <button
-              onClick={(e) => { e.stopPropagation(); handleDelete(campaign.id); }}
-              className="absolute top-2 right-2 text-gray-400 hover:text-white font-bold text-2xl"
-            >
-              &times;
-            </button>
-            <h3 className="font-bold text-xl text-white">{campaign.campaignName}</h3>
-            <div className="mt-4 space-y-2 text-gray-300">
-              <p>Status: <span className={`font-semibold px-2 py-1 rounded-full text-sm ${campaign.status === 'ON' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>{campaign.status}</span></p>
-              <p>Bid: <span className="font-mono text-cyan-400">{campaign.bidAmount}</span></p>
-              <p>Fund: <span className="font-mono text-cyan-400">{campaign.campaignFund}</span></p>
-              <p>Keywords: <span className="text-indigo-300">{campaign.keywords.join(', ')}</span></p>
+          <div key={campaign.id} className="group relative p-6 bg-slate-800/50 rounded-xl cursor-pointer hover:bg-slate-800 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-purple-500/20 border border-slate-800 hover:border-slate-700" onClick={() => handleOpenEditForm(campaign)}>
+            <div className="absolute -inset-px bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-md"></div>
+            <div className="relative">
+              <button 
+                onClick={(e) => { e.stopPropagation(); handleDelete(campaign.id); }}
+                className="absolute top-4 right-4 text-slate-500 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+              <h3 className="font-bold text-xl text-white truncate pr-8">{campaign.campaignName}</h3>
+              <div className="mt-4 space-y-3 text-slate-300">
+                <p className="flex items-center gap-2">Status: <span className={`font-semibold px-2.5 py-0.5 rounded-full text-xs ${campaign.status === 'ON' ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-300'}`}>{campaign.status}</span></p>
+                <p className="flex items-center gap-2">Bid: <span className="font-mono text-cyan-400">{campaign.bidAmount.toFixed(2)}</span></p>
+                <p className="flex items-center gap-2">Fund: <span className="font-mono text-cyan-400">{campaign.campaignFund.toFixed(2)}</span></p>
+                <p className="flex items-center gap-2">Keywords: <span className="text-indigo-300 truncate">{campaign.keywords.join(', ')}</span></p>
+              </div>
             </div>
           </div>
         ))}
