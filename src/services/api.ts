@@ -32,6 +32,20 @@ export const createSeller = async (sellerData: { name: string; initialEmeraldBal
   return response.json();
 };
 
+export const topUpSeller = async (sellerId: number, amount: number): Promise<Seller> => {
+  const response = await fetch(`${API_BASE_URL}/sellers/${sellerId}/topup`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ amount }),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to top up seller balance');
+  }
+  return response.json();
+};
+
 export const getProductsBySeller = async (sellerId: number): Promise<Product[]> => {
   const response = await fetch(`${API_BASE_URL}/products/sellers/${sellerId}/products`);
   if (!response.ok) {
