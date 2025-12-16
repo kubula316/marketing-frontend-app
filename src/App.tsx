@@ -105,7 +105,7 @@ const App: React.FC = () => {
         <header className="mb-12 text-center relative">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-32 bg-indigo-500/20 blur-[100px] rounded-full pointer-events-none"></div>
           <h1 className="relative text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400 py-4 tracking-tight drop-shadow-sm">
-            Futurum Marketing
+            Marketing
           </h1>
           <p className="text-slate-400 text-lg mt-2">Campaign Management System</p>
         </header>
